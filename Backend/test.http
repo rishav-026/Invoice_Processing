@@ -1,0 +1,9 @@
+POST http://127.0.0.1:5000/process_invoice
+Content-Type: multipart/form-data; boundary=boundary123
+
+--boundary123
+Content-Disposition: form-data; name="invoice"; filename="invoice.jpg"
+Content-Type: image/jpeg
+
+< C:\Users\risha\Downloads\invoice.jpg
+--boundary123--

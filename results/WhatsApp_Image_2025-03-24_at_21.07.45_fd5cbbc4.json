@@ -1,0 +1,12 @@
+{
+    "invoice_number": "",
+    "date": "",
+    "vendor_name": "",
+    "vendor_address": "",
+    "customer_name": "",
+    "customer_address": "",
+    "items": [],
+    "subtotal": "",
+    "tax": "",
+    "total_amount": ""
+}

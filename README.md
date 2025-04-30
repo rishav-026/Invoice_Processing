@@ -1,70 +1,216 @@
-# Getting Started with Create React App
+# Invoice Processing Tool Documentation
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
+The **Invoice Processing Tool** is a web-based application designed to automate the extraction of information from invoice images. It supports both typed and handwritten invoices through the use of Tesseract OCR (local) and Google Cloud Vision API (cloud). The extracted data includes invoice number, date, vendor details, customer information, item breakdown, and totals.
 
-## Available Scripts
+The tool consists of:
+- **Flask API** backend for OCR and parsing logic
+- **React.js** frontend for user interaction
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## Table of Contents
+1. [Features](#features)
+2. [Technologies Used](#technologies-used)
+3. [Project Structure](#project-structure)
+4. [Installation](#installation)
+   - [Prerequisites](#prerequisites)
+   - [Setup](#setup)
+5. [Running the Application](#running-the-application)
+6. [API Endpoints](#api-endpoints)
+7. [Example Usage](#example-usage)
+8. [Additional Scripts](#additional-scripts)
+9. [License](#license)
+10. [Acknowledgements](#acknowledgements)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Features
 
-### `npm test`
+### Text Extraction
+- Extracts raw text using **Tesseract OCR** or **Google Cloud Vision API**
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Invoice Parsing
+- Extracts and identifies fields:
+  - Invoice Number
+  - Date
+  - Vendor and Customer Names/Addresses
+  - Item List
+  - Subtotal, Tax, Total
 
-### `npm run build`
+### File Upload
+- Upload invoices via frontend
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### CORS Support
+- Allows cross-origin requests from the React.js frontend
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Error Handling
+- Falls back to Tesseract OCR if Google Vision fails
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## Technologies Used
+- **Python 3.7+** - Backend logic
+- **Flask** - API development
+- **Tesseract OCR** - Local OCR engine
+- **Google Cloud Vision API** - Cloud OCR engine
+- **React.js** - Frontend framework
+- **Flask-CORS** - CORS middleware for Flask
+- **Werkzeug** - File upload handling
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Project Structure
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```
+Invoice_Processing/
+├── Backend/             # Flask API backend
+│   ├── app.py           # Main entry point for Flask app
+│   ├── test_vision.py   # Script to test Vision API
+│   ├── test.http        # Optional HTTP request testing file
+│   └── train_donut.py   # Document-understanding model trainer
+├── Frontend/            # React frontend
+│   ├── node_modules/    # React dependencies
+│   ├── src/             # Frontend source files
+│   └── README.md        # Frontend documentation
+├── public/              # Static assets (images, etc.)
+├── results/             # Output results and parsed data
+├── src/                 # Shared or top-level source files
+├── uploads/             # Uploaded invoice images
+├── .env/                # Virtual environment (should be gitignored)
+├── .gitignore
+├── README.md            # Project documentation
+├── requirements.txt     # Python dependencies
+├── package.json         # Node.js dependencies
+├── package-lock.json
+├── postcss.config.js
+└── .gitattributes
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## Installation
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Prerequisites
+- Python 3.7 or higher
+- Tesseract OCR installed and accessible via PATH
+- Google Cloud Platform account (for Vision API)
+- Flask and other required Python packages
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Setup
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/invoice-processing-tool.git
+cd invoice-processing-tool
+```
 
-### Code Splitting
+2. Install Python dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+3. Install Tesseract OCR:
+- **Windows**: Download from [Tesseract GitHub](https://github.com/tesseract-ocr/tesseract), add to system PATH
+- **Linux**:
+```bash
+sudo apt install tesseract-ocr
+```
 
-### Analyzing the Bundle Size
+4. Setup Google Vision API:
+   - Create a GCP project
+   - Enable Vision API
+   - Download service account key JSON
+   - Set the environment variable:
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS="/path/to/credentials.json"
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+5. Create an `uploads` directory:
+```bash
+mkdir uploads
+```
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Running the Application
+### Start Flask Backend:
+```bash
+cd Backend
+python app.py
+```
+Runs on: [http://localhost:5000](http://localhost:5000)
 
-### Advanced Configuration
+### Start React Frontend:
+```bash
+cd Frontend
+npm install
+npm start
+```
+Runs on: [http://localhost:3000](http://localhost:3000)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## API Endpoints
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### `GET /`
+- Renders a basic landing HTML page
 
-### `npm run build` fails to minify
+### `POST /process-invoice`
+- Accepts: Form-data with key `invoice` (image file)
+- Returns: JSON with raw extracted text
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+#### Example Request:
+```
+invoice=<image-file>
+```
+
+#### Example Response:
+```json
+{
+  "raw_text": "Extracted text from the invoice"
+}
+```
+
+---
+
+## Example Usage
+1. Upload invoice via frontend form
+2. Backend uses OCR (Vision API → Tesseract fallback)
+3. Text is parsed and returned as structured JSON
+
+### Example Raw Text Output:
+```
+Invoice No: INV123456
+Date: 2025-04-30
+Vendor: Example Vendor Inc.
+Customer: John Doe
+Items:
+- Item 1: $100.00
+- Item 2: $50.00
+Subtotal: $150.00
+Tax: $15.00
+Total Amount: $165.00
+```
+
+---
+
+## Additional Scripts
+
+- `train_donut.py`: Used for training a document-understanding model (Donut). Useful if you want to improve accuracy beyond default OCR methods.
+- `test_vision.py`: Quick script to validate Google Vision API results.
+- `test.http`: Optional file for testing HTTP requests to the Flask API.
+
+---
+
+## License
+This project is licensed under the **MIT License**. See the `LICENSE` file for more details.
+
+---
+
+## Acknowledgements
+- **Tesseract OCR** - [GitHub](https://github.com/tesseract-ocr/tesseract)
+- **Google Cloud Vision API** - [Documentation](https://cloud.google.com/vision)
+- **Flask** - [Official Docs](https://flask.palletsprojects.com/)
+- **Werkzeug** - [Documentation](https://werkzeug.palletsprojects.com/)
+
+---
